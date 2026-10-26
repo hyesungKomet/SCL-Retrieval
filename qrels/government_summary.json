@@ -1,0 +1,22 @@
+{
+  "queries_total": 447,
+  "pairs_total": 4470,
+  "pairs_relevant": 4006,
+  "pairs_relevant_pct": 0.8962,
+  "pairs_missing_category": 0,
+  "queries_with_relevant": 446,
+  "queries_zero_relevant": 1,
+  "per_query_relevant_dist": {
+    "0": 1,
+    "1": 3,
+    "2": 2,
+    "3": 9,
+    "4": 9,
+    "5": 11,
+    "6": 7,
+    "7": 14,
+    "8": 43,
+    "9": 83,
+    "10": 265
+  }
+}

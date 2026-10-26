@@ -1,0 +1,11 @@
+# Data are distributed separately (see data/README.md); only the README is tracked.
+data/*
+!data/README.md
+
+# Generated embeddings, qrels and results
+work/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
