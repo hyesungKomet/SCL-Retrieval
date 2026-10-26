@@ -1,4 +1,4 @@
-"""Paths, constants and model specs. Every number used by the pipeline lives here.
+"""Paths, constants and model specs.
 
 Two query directions are evaluated (cross-domain retrieval):
 
@@ -19,10 +19,10 @@ DATA_ROOT = Path(os.environ.get("SCL_DATA_ROOT", REPO_ROOT / "data")).resolve()
 WORK_ROOT = Path(os.environ.get("SCL_WORK_ROOT", REPO_ROOT / "work")).resolve()
 
 GOLD_CSV = DATA_ROOT / "gold_final.csv"
-EMBEDDING_DIR = WORK_ROOT / "embeddings"        # scripts/encode.py writes here
-POOLED_QRELS_DIR = WORK_ROOT / "qrels"          # scripts/build_qrels.py writes here
-RESULTS_DIR = WORK_ROOT / "results"             # scripts/evaluate.py writes here
-RELEASED_QRELS_DIR = REPO_ROOT / "qrels"        # qrels used in the paper (shipped with the repo)
+EMBEDDING_DIR = WORK_ROOT / "embeddings"        # written by encode.py
+POOLED_QRELS_DIR = WORK_ROOT / "qrels"          # written by build_qrels.py
+RESULTS_DIR = WORK_ROOT / "results"             # written by evaluate.py
+RELEASED_QRELS_DIR = REPO_ROOT / "qrels"        # qrels used in the paper (tracked in git)
 
 CATEGORIES = ("finance", "government")
 

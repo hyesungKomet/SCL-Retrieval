@@ -32,7 +32,7 @@ def mean_of(results: dict, model: str, config: str) -> float:
 
 
 def print_tables(results: dict, models: list[str]) -> None:
-    print(f"\nTable 1 · Recall@20 · {models[0]}")
+    print(f"\nTable 1: Recall@20 ({models[0]})")
     print(f"| {'Method':<46} | Finance | Government | Mean  |")
     print(f"|{'-' * 48}|---------|------------|-------|")
     for label, config in TABLE1_ROWS:
@@ -41,7 +41,7 @@ def print_tables(results: dict, models: list[str]) -> None:
         print(f"| {label:<46} | {fin:.3f}   | {gov:.3f}      | "
               f"{mean_of(results, models[0], config):.3f} |")
     if len(models) > 1:
-        print("\nTable 2 · Recall@20, mean of both query sets")
+        print("\nTable 2: Recall@20, mean of both query sets")
         print(f"| {'Embedding model':<16} | Dense | SCL-Retrieval | Gain   |")
         print(f"|{'-' * 18}|-------|---------------|--------|")
         for model in models:

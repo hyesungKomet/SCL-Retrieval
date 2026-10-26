@@ -103,11 +103,11 @@ def load_embeddings(model_key: str, doc_ids: list[str], qids: list[str]) -> Embe
     d = embedding_dir(model_key)
     if not (d / "meta.json").exists():
         raise SystemExit(f"No embeddings for {model_key} in {d}. "
-                         f"Run: python scripts/encode.py --models {model_key}")
+                         f"Run: python encode.py --models {model_key}")
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
     if meta["doc_ids"] != doc_ids or meta["qids"] != qids:
         raise SystemExit(f"{d}/meta.json lists different doc_ids/qids than the data. "
-                         f"Re-run scripts/encode.py --models {model_key}")
+                         f"Re-run encode.py --models {model_key}")
     doc = np.load(d / "doc.npy").astype(np.float32)
     query = np.load(d / "query.npy").astype(np.float32)
     for name, mat in (("doc", doc), ("query", query)):
@@ -115,7 +115,7 @@ def load_embeddings(model_key: str, doc_ids: list[str], qids: list[str]) -> Embe
         if not np.allclose(norms, 1.0, atol=NORM_TOLERANCE):
             raise SystemExit(f"{model_key} {name} vectors are not L2-normalised "
                              f"(norm {norms.min():.4f}..{norms.max():.4f})")
-    print(f"[embeddings] {model_key}: doc {doc.shape} · query {query.shape}")
+    print(f"[embeddings] {model_key}: doc {doc.shape}, query {query.shape}")
     return Embeddings(model_key, doc, query,
                       {doc_id: i for i, doc_id in enumerate(doc_ids)},
                       {qid: i for i, qid in enumerate(qids)})

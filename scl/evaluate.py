@@ -59,9 +59,9 @@ def build_instances(qrels: dict[str, list[str]], queries: list[Query],
             if doc.category != direction.query_category:
                 raise ValueError(f"qrels[{qid}] document {doc_id} is {doc.category}")
             instances.append((qid, doc_id))
-    print(f"[instances] {direction.key}: {len(qrels)} queries in qrels · "
-          f"{n_zero} without a relevant document (excluded) · "
-          f"{len(instances)} instances · {len({q for q, _ in instances})} queries · "
+    print(f"[instances] {direction.key}: {len(qrels)} queries in qrels, "
+          f"{n_zero} without a relevant document (excluded), "
+          f"{len(instances)} instances, {len({q for q, _ in instances})} queries, "
           f"{len({d for _, d in instances})} distinct relevant documents")
     return instances
 
@@ -127,7 +127,7 @@ def evaluate_direction(direction: Direction, docs: list[Document], queries: list
                         fuse(rule, signal_names, signals))
         if n_done % 200 == 0 or n_done == len(qids_by_needle):
             print(f"  [{direction.key}] {n_done}/{len(qids_by_needle)} relevant documents "
-                  f"· {time.time() - started:.0f}s")
+                  f"({time.time() - started:.0f}s)")
 
     recall = {m: {c: round(float(np.mean([h[i] for i in instances])), 4)
                   for c, h in by_config.items()}

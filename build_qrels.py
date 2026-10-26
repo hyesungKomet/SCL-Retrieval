@@ -62,7 +62,7 @@ def main() -> None:
         qrels, summary = pool_and_judge(score_matrices, [q.qid for q in queries],
                                         direction.query_category, doc_ids, doc_categories)
         print(f"[pool] {key}: {summary['pairs_relevant']}/{summary['pairs_total']} pooled pairs "
-              f"relevant · {summary['queries_zero_relevant']} queries without a relevant document")
+              f"relevant, {summary['queries_zero_relevant']} queries without a relevant document")
         write_json(POOLED_QRELS_DIR / direction.qrels_name, qrels)
         write_json(POOLED_QRELS_DIR / f"{direction.query_category}_summary.json", summary)
         compare_with_released(qrels, direction.qrels_name)

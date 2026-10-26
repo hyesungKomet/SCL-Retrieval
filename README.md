@@ -8,11 +8,11 @@ cases from a corpus of transcripts (query-by-document). It ranks the corpus with
 signals and combines the ranks with Reciprocal Rank Fusion, without training, channel
 weights or score normalisation.
 
-| Signal | What it measures | Eq. |
-|---|---|---|
-| **S**emantic — Dense | cosine between KURE-v1 embeddings of query and document | (1) |
-| **C**orpus-relative — Corpus-Centroid Distance (CCD) | distance of a document from the normalised corpus centroid | (2) |
-| **L**exical — word TF-IDF | eojeol (word) TF-IDF cosine fitted on the corpus | (3) |
+| | Signal | Score | Eq. |
+|---|---|---|---|
+| S (semantic) | Dense | cosine between the KURE-v1 embeddings of query and document | (1) |
+| C (corpus-relative) | Corpus-Centroid Distance (CCD) | distance of a document from the normalised corpus centroid | (2) |
+| L (lexical) | word TF-IDF | eojeol (word) TF-IDF cosine, fitted on the corpus | (3) |
 
 The fused score is `s_RRF(d) = Σ_c 1 / (60 + rank_c(d))` (Eq. 4).
 
@@ -20,14 +20,14 @@ The fused score is `s_RRF(d) = Σ_c 1 / (60 + rank_c(d))` (Eq. 4).
 
 ## Installation
 
-1. **Create and activate the environment**
+1. Create and activate the environment:
    ```sh
    conda env create -f environment.yml
    conda activate scl
    ```
    or, without conda, `pip install -r requirements.txt` in Python 3.12.
 
-2. **Prepare the data** — the transcripts are distributed separately. See
+2. Prepare the data. The transcripts are distributed separately; see
    [data/README.md](data/README.md) for the files and their layout, then either put them
    in `data/` or set
    ```sh
@@ -39,26 +39,31 @@ Model checkpoints are downloaded from the Hugging Face Hub on first use.
 
 ## Preprocess
 
-* **Embeddings** — encode the 3,014 documents and 671 queries once per model
-   ```sh
-   # KURE-v1 only (Table 1)
-   python encode.py --models kure_v1 --device cuda
+### Embeddings
 
-   # all embedding models of Table 2
-   python encode.py --models kure_v1 bge_m3 qwen3_0_6b qwen3_8b --device cuda
-   ```
+Encode the 3,014 documents and 671 queries once per model:
+```sh
+# KURE-v1 only (Table 1)
+python encode.py --models kure_v1 --device cuda
 
-* **Relevance judgements (optional)** — the qrels used in the paper are in `qrels/`.
-   To rebuild them by pooling BM25, mDPR and mColBERT (top 100 each, min-max averaged,
-   top 10 with the query's category are relevant):
-   ```sh
-   python build_qrels.py --device cuda
-   ```
-   The script writes `work/qrels/` and reports how many queries differ from `qrels/`.
-   Rebuilt on an Apple M-series GPU (MPS), the government qrels match exactly and 3 of
-   224 finance queries swap one document at the pool boundary (rank 10/11), where neural
-   scores are nearly tied and hardware rounding decides. Use `qrels/` to reproduce the
-   paper's numbers.
+# all embedding models of Table 2
+python encode.py --models kure_v1 bge_m3 qwen3_0_6b qwen3_8b --device cuda
+```
+
+### Relevance judgements (optional)
+
+The qrels used in the paper are in `qrels/`. They were built by pooling BM25, mDPR and
+mColBERT: each retriever keeps its top 100 documents, the min-max normalised scores are
+summed, and the documents among the top 10 that share the query's category are relevant.
+To rebuild them:
+```sh
+python build_qrels.py --device cuda
+```
+The script writes `work/qrels/` and reports how many queries differ from `qrels/`.
+We rebuilt them on an Apple M-series GPU (MPS). The government qrels came out identical.
+For 3 of the 224 finance queries, one document at rank 10/11 of the pool was swapped,
+because the neural scores there are almost tied and the result depends on floating-point
+rounding. Use `qrels/` to reproduce the numbers in the paper.
 
 ## Evaluation
 
@@ -79,12 +84,12 @@ plus every document of the other impersonation domain (915 documents for finance
 document ranks in the top 20. The relevant document is placed last in the corpus, so score
 ties are resolved against it. This gives 1,951 finance and 4,006 government instances.
 
-Results (per direction and per model, for every signal combination) are written to
-`work/results/{fin_gov,gov_fin}.json`, and the tables are printed.
+The script prints the tables and writes the scores of every signal combination, per
+direction and model, to `work/results/{fin_gov,gov_fin}.json`.
 
 ## Results
 
-Recall@20 reproduced with this code (KURE-v1 unless stated):
+Recall@20 obtained with this code. Table 1 uses KURE-v1:
 
 | Method | Finance queries | Government queries | Mean |
 |---|---|---|---|
@@ -102,7 +107,7 @@ Recall@20 reproduced with this code (KURE-v1 unless stated):
 | Qwen3-Embedding-0.6B | 0.748 | 0.918 | +22.7% |
 | Qwen3-Embedding-8B | 0.790 | 0.922 | +16.7% |
 
-The RPRS baseline of Table 1 is not part of this repository.
+The RPRS baseline of Table 1 is not included in this repository.
 
 ## Repository structure
 
